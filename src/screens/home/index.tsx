@@ -75,7 +75,7 @@ export default function Home() {
     useEffect(() => {
         const canvas = canvasRef.current;
         const overlayCanvas = overlayCanvasRef.current;
-
+    
         if (canvas && overlayCanvas) {
             const ctx = canvas.getContext('2d');
             if (ctx) {
@@ -84,18 +84,16 @@ export default function Home() {
                 ctx.lineCap = 'round';
                 ctx.lineWidth = 3;
             }
-
+    
             overlayCanvas.width = canvas.width;
             overlayCanvas.height = canvas.height;
             overlayCanvas.style.position = 'absolute';
             overlayCanvas.style.left = `${canvas.offsetLeft}px`;
             overlayCanvas.style.top = `${canvas.offsetTop}px`;
-            overlayCanvas.style.pointerEvents = 'none'; // Make it non-interactive
         }
     }, []);
 
     const renderLatexToCanvas = (expression: string, answer: string) => {
-        // const latex = `${expression} = ${answer}`;
         const latex = `\\(\\LARGE{${expression} = ${answer}}\\)`;
         setLatexExpression([...latexExpression, latex]);
 
@@ -120,7 +118,8 @@ export default function Home() {
 
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
-        if (canvas) {
+        const overlayCanvas = overlayCanvasRef.current;
+        if (canvas && overlayCanvas) {
             canvas.style.background = 'black';
             const ctx = canvas.getContext('2d');
             if (ctx) {
@@ -128,24 +127,24 @@ export default function Home() {
                 ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
                 setIsDrawing(true);
             }
-        };
-    }
-
+        }
+    };
     const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!isDrawing) {
             return;
         }
         const canvas = canvasRef.current;
-        if (canvas) {
+        const overlayCanvas = overlayCanvasRef.current;
+        if (canvas && overlayCanvas) {
             const ctx = canvas.getContext('2d');
-            if (ctx) {
+            const overlayCtx = overlayCanvas.getContext('2d');
+            if (ctx && overlayCtx) {
                 ctx.strokeStyle = color;
                 ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
                 ctx.stroke();
             }
         }
     };
-
     const stopDrawing = () => {
         setIsDrawing(false);
     };
@@ -174,16 +173,6 @@ export default function Home() {
                     });
                 }
             });
-            // if (resp.data.assign === true) {
-            //     // dict_of_vars[resp.result] = resp.answer;
-            //     console.log('Setting dictOfVars', dictOfVars, resp.data.result, resp.data.answer);
-            //     setDictOfVars({
-            //         ...dictOfVars,
-            //         [resp.data.result]: resp.data.answer
-            //     });
-            // }
-    
-            // Calculate the center of the drawn area   
             const ctx = canvas.getContext('2d');
             const imageData = ctx!.getImageData(0, 0, canvas.width, canvas.height);
             let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
@@ -204,10 +193,6 @@ export default function Home() {
             const centerY = (minY + maxY) / 2;
 
             setLatexPosition({ x: centerX, y: centerY });
-            // setResult({
-            //     expression: resp.data.result,
-            //     answer: resp.data.answer
-            // });
             resp.data.forEach((data: Response) => {
                 setTimeout(() => {
                     setResult({
@@ -244,24 +229,25 @@ export default function Home() {
                     Run
                 </Button>
             </div>
-            <canvas
-                ref={canvasRef}
-                id='canvas'
-                className='absolute top-0 left-0 w-full h-full'
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseOut={stopDrawing}
-            />
-                <canvas
-        ref={canvasRef}
-        id='canvas'
-        className='absolute top-0 left-0 w-full h-full'
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseOut={stopDrawing}
-    />
+        <canvas
+            ref={canvasRef}
+            id='canvas'
+            className='absolute top-0 left-0 w-full h-full'
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseOut={stopDrawing}
+        />
+        <canvas
+            ref={overlayCanvasRef}
+            id='overlayCanvas'
+            className='absolute top-0 left-0 w-full h-full'
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseOut={stopDrawing}
+        />
+
     {latexExpression && latexExpression.map((latex, index) => (
         <Draggable
             key={index}

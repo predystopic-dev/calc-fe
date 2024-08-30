@@ -1,4 +1,3 @@
-// Copyright (c) 2023-present P2, Inc. All Rights Reserved.
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
