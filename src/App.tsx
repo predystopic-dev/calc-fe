@@ -20,7 +20,7 @@ const BrowserRouter = createBrowserRouter(paths);
 const App = () => {
     return (
     <MantineProvider>
-      <RouterProvider router={BrowserRouter}/>;
+      <RouterProvider router={BrowserRouter}/>
     </MantineProvider>
     )
 };
