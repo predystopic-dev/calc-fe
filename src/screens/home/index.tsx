@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Draggable from 'react-draggable';
 import {SWATCHES} from '@/constants';
-import {LazyBrush} from 'lazy-brush';
+// import {LazyBrush} from 'lazy-brush';
 
 interface GeneratedResult {
     expression: string;
@@ -27,11 +27,11 @@ export default function Home() {
     const [latexPosition, setLatexPosition] = useState({ x: 10, y: 200 });
     const [latexExpression, setLatexExpression] = useState<Array<string>>([]);
 
-    const lazyBrush = new LazyBrush({
-        radius: 10,
-        enabled: true,
-        initialPoint: { x: 0, y: 0 },
-    });
+    // const lazyBrush = new LazyBrush({
+    //     radius: 10,
+    //     enabled: true,
+    //     initialPoint: { x: 0, y: 0 },
+    // });
 
     useEffect(() => {
         if (latexExpression.length > 0 && window.MathJax) {
@@ -65,8 +65,8 @@ export default function Home() {
             if (ctx) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight - canvas.offsetTop;
-                // ctx.lineCap = 'round';
-                // ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.lineWidth = 3;
             }
 
         }
